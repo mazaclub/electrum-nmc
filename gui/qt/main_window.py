@@ -217,7 +217,7 @@ class ElectrumWindow(QMainWindow):
         self.invoices = self.wallet.storage.get('invoices', {})
         self.accounts_expanded = self.wallet.storage.get('accounts_expanded',{})
         self.current_account = self.wallet.storage.get("current_account", None)
-        title = 'Electrum ' + self.wallet.electrum_version + '  -  ' + os.path.basename(self.wallet.storage.path)
+        title = 'Electrum-NMC ' + self.wallet.electrum_version + '  -  ' + os.path.basename(self.wallet.storage.path)
         if self.wallet.is_watching_only(): title += ' [%s]' % (_('watching only'))
         self.setWindowTitle( title )
         self.update_history_tab()
@@ -313,7 +313,7 @@ class ElectrumWindow(QMainWindow):
                 shutil.copy2(path, new_path)
                 QMessageBox.information(None,"Wallet backup created", _("A copy of your wallet file was created in")+" '%s'" % str(new_path))
             except (IOError, os.error), reason:
-                QMessageBox.critical(None,"Unable to create backup", _("Electrum was unable to copy your wallet file to the specified location.")+"\n" + str(reason))
+                QMessageBox.critical(None,"Unable to create backup", _("Electrum-NMC was unable to copy your wallet file to the specified location.")+"\n" + str(reason))
 
 
     def new_wallet(self):
@@ -380,7 +380,7 @@ class ElectrumWindow(QMainWindow):
         tools_menu = menubar.addMenu(_("&Tools"))
 
         # Settings / Preferences are all reserved keywords in OSX using this as work around
-        tools_menu.addAction(_("Electrum preferences") if sys.platform == 'darwin' else _("Preferences"), self.settings_dialog)
+        tools_menu.addAction(_("Electrum-NMC preferences") if sys.platform == 'darwin' else _("Preferences"), self.settings_dialog)
         tools_menu.addAction(_("&Network"), self.run_network_dialog)
         tools_menu.addAction(_("&Plugins"), self.plugins_dialog)
         tools_menu.addSeparator()
@@ -409,12 +409,12 @@ class ElectrumWindow(QMainWindow):
         self.setMenuBar(menubar)
 
     def show_about(self):
-        QMessageBox.about(self, "Electrum",
-            _("Version")+" %s" % (self.wallet.electrum_version) + "\n\n" + _("Electrum's focus is speed, with low resource usage and simplifying Bitcoin. You do not need to perform regular backups, because your wallet can be recovered from a secret phrase that you can memorize or write on paper. Startup times are instant because it operates in conjunction with high-performance servers that handle the most complicated parts of the Bitcoin system."))
+        QMessageBox.about(self, "Electrum-NMC",
+            _("Version")+" %s" % (self.wallet.electrum_version) + "\n\n" + _("Electrum-NMC's focus is speed, with low resource usage and simplifying Namecoin. You do not need to perform regular backups, because your wallet can be recovered from a secret phrase that you can memorize or write on paper. Startup times are instant because it operates in conjunction with high-performance servers that handle the most complicated parts of the Namecoin system."))
 
     def show_report_bug(self):
-        QMessageBox.information(self, "Electrum - " + _("Reporting Bugs"),
-            _("Please report any bugs as issues on github:")+" <a href=\"https://github.com/spesmilo/electrum/issues\">https://github.com/spesmilo/electrum/issues</a>")
+        QMessageBox.information(self, "Electrum-NMC - " + _("Reporting Bugs"),
+            _("Please report any bugs as issues on github:")+" <a href=\"https://github.com/kefkius/electrum-nmc/issues\">https://github.com/kefkius/electrum-nmc/issues</a>")
 
 
     def notify_transactions(self):
@@ -446,7 +446,7 @@ class ElectrumWindow(QMainWindow):
 
     def notify(self, message):
         if self.tray:
-            self.tray.showMessage("Electrum", message, QSystemTrayIcon.Information, 20000)
+            self.tray.showMessage("Electrum-NMC", message, QSystemTrayIcon.Information, 20000)
 
 
 
@@ -922,7 +922,7 @@ class ElectrumWindow(QMainWindow):
                 query.append('amount=%s'%format_satoshis(amount))
             if message:
                 query.append('message=%s'%urllib.quote(message))
-            p = urlparse.ParseResult(scheme='bitcoin', netloc='', path=addr, params='', query='&'.join(query), fragment='')
+            p = urlparse.ParseResult(scheme='namecoin', netloc='', path=addr, params='', query='&'.join(query), fragment='')
             url = urlparse.urlunparse(p)
         else:
             url = ""
@@ -943,7 +943,7 @@ class ElectrumWindow(QMainWindow):
         from paytoedit import PayToEdit
         self.amount_e = BTCAmountEdit(self.get_decimal_point)
         self.payto_e = PayToEdit(self)
-        self.payto_help = HelpButton(_('Recipient of the funds.') + '\n\n' + _('You may enter a Bitcoin address, a label from your list of contacts (a list of completions will be proposed), or an alias (email-like address that forwards to a Bitcoin address)'))
+        self.payto_help = HelpButton(_('Recipient of the funds.') + '\n\n' + _('You may enter a Namecoin address, a label from your list of contacts (a list of completions will be proposed), or an alias (email-like address that forwards to a Namecoin address)'))
         grid.addWidget(QLabel(_('Pay to')), 1, 0)
         grid.addWidget(self.payto_e, 1, 1, 1, 3)
         grid.addWidget(self.payto_help, 1, 4)
@@ -983,7 +983,7 @@ class ElectrumWindow(QMainWindow):
         self.fee_e = BTCAmountEdit(self.get_decimal_point)
         grid.addWidget(self.fee_e_label, 5, 0)
         grid.addWidget(self.fee_e, 5, 1, 1, 2)
-        msg = _('Bitcoin transactions are in general not free. A transaction fee is paid by the sender of the funds.') + '\n\n'\
+        msg = _('Namecoin transactions are in general not free. A transaction fee is paid by the sender of the funds.') + '\n\n'\
               + _('The amount of fee can be decided freely by the sender. However, transactions with low fees take more time to be processed.') + '\n\n'\
               + _('A suggested fee is automatically added to this field. You may override it. The suggested fee increases with the size of the transaction.')
         self.fee_e_help = HelpButton(msg)
@@ -1126,10 +1126,10 @@ class ElectrumWindow(QMainWindow):
 
         for _type, addr, amount in outputs:
             if addr is None:
-                QMessageBox.warning(self, _('Error'), _('Bitcoin Address is None'), _('OK'))
+                QMessageBox.warning(self, _('Error'), _('Namecoin Address is None'), _('OK'))
                 return
             if _type == 'address' and not bitcoin.is_address(addr):
-                QMessageBox.warning(self, _('Error'), _('Invalid Bitcoin Address'), _('OK'))
+                QMessageBox.warning(self, _('Error'), _('Invalid Namecoin Address'), _('OK'))
                 return
             if amount is None:
                 QMessageBox.warning(self, _('Error'), _('Invalid Amount'), _('OK'))
@@ -1302,7 +1302,7 @@ class ElectrumWindow(QMainWindow):
         try:
             address, amount, label, message, request_url = util.parse_URI(URI)
         except Exception as e:
-            QMessageBox.warning(self, _('Error'), _('Invalid bitcoin URI:') + '\n' + str(e), _('OK'))
+            QMessageBox.warning(self, _('Error'), _('Invalid namecoin URI:') + '\n' + str(e), _('OK'))
             return
 
         self.tabs.setCurrentIndex(1)
@@ -1594,7 +1594,7 @@ class ElectrumWindow(QMainWindow):
             payto_addr = item.data(0,33).toString()
             menu.addAction(_("Copy to Clipboard"), lambda: self.app.clipboard().setText(addr))
             menu.addAction(_("Pay to"), lambda: self.payto(payto_addr))
-            menu.addAction(_("QR code"), lambda: self.show_qrcode("bitcoin:" + addr, _("Address")))
+            menu.addAction(_("QR code"), lambda: self.show_qrcode("namecoin:" + addr, _("Address")))
             if is_editable:
                 menu.addAction(_("Edit label"), lambda: self.edit_label(False))
                 menu.addAction(_("Delete"), lambda: self.delete_contact(addr))
@@ -1880,7 +1880,7 @@ class ElectrumWindow(QMainWindow):
         vbox.addWidget(QLabel(_('Account name')+':'))
         e = QLineEdit()
         vbox.addWidget(e)
-        msg = _("Note: Newly created accounts are 'pending' until they receive bitcoins.") + " " \
+        msg = _("Note: Newly created accounts are 'pending' until they receive namecoins.") + " " \
             + _("You will need to wait for 2 confirmations until the correct balance is displayed and more addresses are created for that account.")
         l = QLabel(msg)
         l.setWordWrap(True)
@@ -2207,7 +2207,7 @@ class ElectrumWindow(QMainWindow):
                 return Transaction.deserialize(txt)
             except:
                 traceback.print_exc(file=sys.stdout)
-                QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum was unable to parse your transaction"))
+                QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum-NMC was unable to parse your transaction"))
                 return
 
         try:
@@ -2220,7 +2220,7 @@ class ElectrumWindow(QMainWindow):
             return tx
         except Exception:
             traceback.print_exc(file=sys.stdout)
-            QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum was unable to parse your transaction"))
+            QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum-NMC was unable to parse your transaction"))
 
 
     def read_tx_from_qrcode(self):
@@ -2233,7 +2233,7 @@ class ElectrumWindow(QMainWindow):
         if not data:
             return
         # if the user scanned a bitcoin URI
-        if data.startswith("bitcoin:"):
+        if data.startswith("namecoin:"):
             self.pay_from_URI(data)
             return
         # else if the user scanned an offline signed tx
@@ -2254,7 +2254,7 @@ class ElectrumWindow(QMainWindow):
             with open(fileName, "r") as f:
                 file_content = f.read()
         except (ValueError, IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum was unable to open your transaction file") + "\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum-NMC was unable to open your transaction file") + "\n" + str(reason))
 
         return self.tx_from_text(file_content)
 
@@ -2306,7 +2306,7 @@ class ElectrumWindow(QMainWindow):
                 amount = int(100000000*amount)
                 outputs.append(('address', address, amount))
         except (ValueError, IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum was unable to open your transaction file") + "\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum-NMC was unable to open your transaction file") + "\n" + str(reason))
             return
         if errors != []:
             for x in errors:
@@ -2331,7 +2331,7 @@ class ElectrumWindow(QMainWindow):
                 csvReader = csv.reader(f)
                 self.do_process_from_csvReader(csvReader)
         except (ValueError, IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum was unable to open your transaction file") + "\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum-NMC was unable to open your transaction file") + "\n" + str(reason))
             return
 
     def do_process_from_csv_text(self):
@@ -2412,7 +2412,7 @@ class ElectrumWindow(QMainWindow):
         try:
             self.do_export_privkeys(filename, private_keys, csv_button.isChecked())
         except (IOError, os.error), reason:
-            export_error_label = _("Electrum was unable to produce a private key-export.")
+            export_error_label = _("Electrum-NMC was unable to produce a private key-export.")
             QMessageBox.critical(None, _("Unable to create csv"), export_error_label + "\n" + str(reason))
 
         except Exception as e:
@@ -2445,7 +2445,7 @@ class ElectrumWindow(QMainWindow):
                 self.wallet.set_label(key, value)
             QMessageBox.information(None, _("Labels imported"), _("Your labels were imported from")+" '%s'" % str(labelsFile))
         except (IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to import labels"), _("Electrum was unable to import your labels.")+"\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to import labels"), _("Electrum-NMC was unable to import your labels.")+"\n" + str(reason))
 
 
     def do_export_labels(self):
@@ -2457,7 +2457,7 @@ class ElectrumWindow(QMainWindow):
                     json.dump(labels, f)
                 QMessageBox.information(None, _("Labels exported"), _("Your labels where exported to")+" '%s'" % str(fileName))
         except (IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to export labels"), _("Electrum was unable to export your labels.")+"\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to export labels"), _("Electrum-NMC was unable to export your labels.")+"\n" + str(reason))
 
 
     def export_history_dialog(self):
@@ -2491,7 +2491,7 @@ class ElectrumWindow(QMainWindow):
         try:
             self.do_export_history(self.wallet, filename, csv_button.isChecked())
         except (IOError, os.error), reason:
-            export_error_label = _("Electrum was unable to produce a transaction export.")
+            export_error_label = _("Electrum-NMC was unable to produce a transaction export.")
             QMessageBox.critical(self, _("Unable to export history"), export_error_label + "\n" + str(reason))
             return
 
@@ -2624,7 +2624,7 @@ class ElectrumWindow(QMainWindow):
     def settings_dialog(self):
         self.need_restart = False
         d = QDialog(self)
-        d.setWindowTitle(_('Electrum Settings'))
+        d.setWindowTitle(_('Electrum-NMC Settings'))
         d.setModal(1)
         vbox = QVBoxLayout()
         grid = QGridLayout()
@@ -2787,13 +2787,13 @@ class ElectrumWindow(QMainWindow):
 
         run_hook('close_settings_dialog')
         if self.need_restart:
-            QMessageBox.warning(self, _('Success'), _('Please restart Electrum to activate the new GUI settings'), _('OK'))
+            QMessageBox.warning(self, _('Success'), _('Please restart Electrum-NMC to activate the new GUI settings'), _('OK'))
 
 
 
     def run_network_dialog(self):
         if not self.network:
-            QMessageBox.warning(self, _('Offline'), _('You are using Electrum in offline mode.\nRestart Electrum if you want to get connected.'), _('OK'))
+            QMessageBox.warning(self, _('Offline'), _('You are using Electrum-NMC in offline mode.\nRestart Electrum-NMC if you want to get connected.'), _('OK'))
             return
         NetworkDialog(self.wallet.network, self.config, self).do_exec()
 
@@ -2812,7 +2812,7 @@ class ElectrumWindow(QMainWindow):
         from electrum_nmc.plugins import plugins
 
         self.pluginsdialog = d = QDialog(self)
-        d.setWindowTitle(_('Electrum Plugins'))
+        d.setWindowTitle(_('Electrum-NMC Plugins'))
         d.setModal(1)
 
         vbox = QVBoxLayout(d)

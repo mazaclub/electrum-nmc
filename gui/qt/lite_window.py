@@ -8,7 +8,7 @@ try:
     import PyQt4.QtCore as QtCore
 
 except ImportError:
-    print "You need to have PyQT installed to run Electrum in graphical mode."
+    print "You need to have PyQT installed to run Electrum-NMC in graphical mode."
     print "If you have pip installed try 'sudo pip install pyqt' if you are on Debian/Ubuntu try 'sudo apt-get install python-qt4'."
     sys.exit(0)
 
@@ -140,14 +140,14 @@ class MiniWindow(QDialog):
 
         # Bitcoin address code
         self.address_input = QLineEdit()
-        self.address_input.setPlaceholderText(_("Enter a Bitcoin address or contact"))
+        self.address_input.setPlaceholderText(_("Enter a Namecoin address or contact"))
         self.address_input.setObjectName("address_input")
 
         self.address_input.setFocusPolicy(Qt.ClickFocus)
 
         self.address_input.textChanged.connect(self.address_field_changed)
         resize_line_edit_width(self.address_input,
-                               "1BtaFUr3qVvAmwrsuDuu5zk6e4s2rxd2Gy")
+                               "NC6UXyecv2pkB3yBRGRMC2T7UhogJgq3nu")
 
         self.address_completions = QStringListModel()
         address_completer = QCompleter(self.address_input)
@@ -252,7 +252,7 @@ class MiniWindow(QDialog):
         self.toggle_receiving_layout(show_hist)
 
         self.setWindowIcon(QIcon(":icons/electrum-nmc.png"))
-        self.setWindowTitle("Electrum")
+        self.setWindowTitle("Electrum-NMC")
         self.setWindowFlags(Qt.Window|Qt.MSWindowsFixedSizeDialogHint)
         self.layout().setSizeConstraint(QLayout.SetFixedSize)
         self.setObjectName("main_window")
@@ -355,7 +355,7 @@ class MiniWindow(QDialog):
         self.amount_input_changed(self.amount_input.text())
 
     def set_balances(self, btc_balance):
-        """Set the bitcoin balance and update the amount label accordingly."""
+        """Set the namecoin balance and update the amount label accordingly."""
         self.btc_balance = btc_balance
         quote_text = self.create_quote_text(btc_balance)
         if quote_text:
@@ -365,10 +365,10 @@ class MiniWindow(QDialog):
         unit = self.actuator.g.base_unit()
 
         self.balance_label.set_balance_text(amount, unit, quote_text)
-        self.setWindowTitle("Electrum %s - %s %s" % (electrum_version, amount, unit))
+        self.setWindowTitle("Electrum-NMC %s - %s %s" % (electrum_version, amount, unit))
 
     def amount_input_changed(self, amount_text):
-        """Update the number of bitcoins displayed."""
+        """Update the number of namecoins displayed."""
         self.check_button_status()
 
         try:
@@ -385,7 +385,7 @@ class MiniWindow(QDialog):
 
     def create_quote_text(self, btc_balance):
         """Return a string copy of the amount fiat currency the
-        user has in bitcoins."""
+        user has in namecoins."""
         from electrum_nmc.plugins import run_hook
         r = {}
         run_hook('get_fiat_balance_text', btc_balance, r)
@@ -398,7 +398,7 @@ class MiniWindow(QDialog):
             self.amount_input.setText("")
 
     def check_button_status(self):
-        """Check that the bitcoin address is valid and that something
+        """Check that the namecoin address is valid and that something
         is entered in the amount before making the send button clickable."""
         try:
             value = D(str(self.amount_input.text())) * (10**self.actuator.g.decimal_point)
@@ -502,7 +502,7 @@ class BalanceLabel(QLabel):
 
 
     def set_balance_text(self, amount, unit, quote_text):
-        """Set the amount of bitcoins in the gui."""
+        """Set the amount of namecoins in the gui."""
         if self.state == self.SHOW_CONNECTING:
             self.state = self.SHOW_BALANCE
 
@@ -573,7 +573,7 @@ class ReceivePopup(QDialog):
         self.close()
 
     def setup(self, address):
-        label = QLabel(_("Copied your Bitcoin address to the clipboard!"))
+        label = QLabel(_("Copied your Namecoin address to the clipboard!"))
         address_display = QLineEdit(address)
         address_display.setReadOnly(True)
         resize_line_edit_width(address_display, address)
@@ -583,7 +583,7 @@ class ReceivePopup(QDialog):
         main_layout.addWidget(address_display)
 
         self.setMouseTracking(True)
-        self.setWindowTitle("Electrum - " + _("Receive Bitcoin payment"))
+        self.setWindowTitle("Electrum-NMC - " + _("Receive Namecoin payment"))
         self.setWindowFlags(Qt.Window|Qt.FramelessWindowHint|
                             Qt.MSWindowsFixedSizeDialogHint)
         self.layout().setSizeConstraint(QLayout.SetFixedSize)
@@ -600,7 +600,7 @@ class ReceivePopup(QDialog):
 
 class MiniActuator:
     """Initialize the definitions relating to themes and
-    sending/receiving bitcoins."""
+    sending/receiving namecoins."""
 
 
     def __init__(self, main_window):
@@ -674,7 +674,7 @@ class MiniActuator:
         s.start()
         w = QDialog()
         w.resize(200, 70)
-        w.setWindowTitle('Electrum')
+        w.setWindowTitle('Electrum-NMC')
         l = QLabel(_('Sending transaction, please wait.'))
         vbox = QVBoxLayout()
         vbox.addWidget(l)
@@ -690,12 +690,12 @@ class MiniActuator:
 
 
     def send(self, address, amount, parent_window):
-        """Send bitcoins to the target address."""
+        """Send namecoins to the target address."""
         dest_address = self.fetch_destination(address)
 
         if dest_address is None or not is_valid(dest_address):
             QMessageBox.warning(parent_window, _('Error'),
-                _('Invalid Bitcoin Address') + ':\n' + address, _('OK'))
+                _('Invalid Namecoin Address') + ':\n' + address, _('OK'))
             return False
 
         amount = D(unicode(amount)) * (10*self.g.decimal_point)
