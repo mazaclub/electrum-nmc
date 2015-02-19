@@ -4,7 +4,7 @@ import os
 
 from util import user_dir, print_error, print_msg
 
-SYSTEM_CONFIG_PATH = "/etc/electrum.conf"
+SYSTEM_CONFIG_PATH = "/etc/electrum-nmc.conf"
 
 config = None
 
@@ -80,7 +80,7 @@ class SimpleConfig(object):
         set_config(self)  # Make a singleton instance of 'self'
 
     def init_path(self):
-        # Read electrum path in the command line configuration
+        # Read electrum-nmc path in the command line configuration
         self.path = self.read_only_options.get('electrum_path')
 
         # If not set, use the user's default data directory.
@@ -91,12 +91,12 @@ class SimpleConfig(object):
         if not os.path.exists(self.path):
             os.mkdir(self.path)
 
-        print_error( "electrum directory", self.path)
+        print_error( "electrum-nmc directory", self.path)
 
     def set_key(self, key, value, save = True):
         if not self.is_modifiable(key):
             print "Warning: not changing key '%s' because it is not modifiable" \
-                  " (passed as command line option or defined in /etc/electrum.conf)"%key
+                  " (passed as command line option or defined in /etc/electrum-nmc.conf)"%key
             return
 
         with self.lock:
@@ -134,13 +134,13 @@ class SimpleConfig(object):
             os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
 
 def read_system_config(path=SYSTEM_CONFIG_PATH):
-    """Parse and return the system config settings in /etc/electrum.conf."""
+    """Parse and return the system config settings in /etc/electrum-nmc.conf."""
     result = {}
     if os.path.exists(path):
         try:
             import ConfigParser
         except ImportError:
-            print "cannot parse electrum.conf. please install ConfigParser"
+            print "cannot parse electrum-nmc.conf. please install ConfigParser"
             return
 
         p = ConfigParser.ConfigParser()
@@ -154,7 +154,7 @@ def read_system_config(path=SYSTEM_CONFIG_PATH):
     return result
 
 def read_user_config(path):
-    """Parse and store the user config settings in electrum.conf into user_config[]."""
+    """Parse and store the user config settings in electrum-nmc.conf into user_config[]."""
     if not path: return {}  # Return a dict, since we will call update() on it.
 
     config_path = os.path.join(path, "config")

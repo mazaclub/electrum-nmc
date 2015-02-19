@@ -235,7 +235,7 @@ def public_key_to_bc_address(public_key):
     h160 = hash_160(public_key)
     return hash_160_to_bc_address(h160)
 
-def hash_160_to_bc_address(h160, addrtype = 0):
+def hash_160_to_bc_address(h160, addrtype = 52):
     vh160 = chr(addrtype) + h160
     h = Hash(vh160)
     addr = vh160 + h[0:4]
@@ -320,7 +320,7 @@ def PrivKeyToSecret(privkey):
     return privkey[9:9+32]
 
 
-def SecretToASecret(secret, compressed=False, addrtype=0):
+def SecretToASecret(secret, compressed=False, addrtype=52):
     vchIn = chr((addrtype+128)&255) + secret
     if compressed: vchIn += '\01'
     return EncodeBase58Check(vchIn)
@@ -404,7 +404,7 @@ from ecdsa.util import string_to_number, number_to_string
 def msg_magic(message):
     varint = var_int(len(message))
     encoded_varint = "".join([chr(int(varint[i:i+2], 16)) for i in xrange(0, len(varint), 2)])
-    return "\x18Bitcoin Signed Message:\n" + encoded_varint + message
+    return "\x18Namecoin Signed Message:\n" + encoded_varint + message
 
 
 def verify_message(address, signature, message):
@@ -670,7 +670,7 @@ BITCOIN_HEADERS = (BITCOIN_HEADER_PUB, BITCOIN_HEADER_PRIV)
 TESTNET_HEADERS = (TESTNET_HEADER_PUB, TESTNET_HEADER_PRIV)
 
 def _get_headers(testnet):
-    """Returns the correct headers for either testnet or bitcoin, in the form
+    """Returns the correct headers for either testnet or namecoin, in the form
     of a 2-tuple, like (public, private)."""
     if testnet:
         return TESTNET_HEADERS
@@ -684,7 +684,7 @@ def deserialize_xkey(xkey):
     assert len(xkey) == 78
 
     xkey_header = xkey[0:4].encode('hex')
-    # Determine if the key is a bitcoin key or a testnet key.
+    # Determine if the key is a namecoin key or a testnet key.
     if xkey_header in TESTNET_HEADERS:
         head = TESTNET_HEADER_PRIV
     elif xkey_header in BITCOIN_HEADERS:
