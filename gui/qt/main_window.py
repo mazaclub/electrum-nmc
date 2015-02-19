@@ -17,8 +17,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import sys, time, datetime, re, threading
-from electrum.i18n import _, set_language
-from electrum.util import print_error, print_msg
+from electrum_nmc.i18n import _, set_language
+from electrum_nmc.util import print_error, print_msg
 import os.path, json, ast, traceback
 import webbrowser
 import shutil
@@ -30,17 +30,17 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 
-from electrum.bitcoin import MIN_RELAY_TX_FEE, is_valid
-from electrum.plugins import run_hook
+from electrum_nmc.bitcoin import MIN_RELAY_TX_FEE, is_valid
+from electrum_nmc.plugins import run_hook
 
 import icons_rc
 
-from electrum.util import format_satoshis, NotEnoughFunds
-from electrum import Transaction
-from electrum import mnemonic
-from electrum import util, bitcoin, commands, Interface, Wallet
-from electrum import SimpleConfig, Wallet, WalletStorage
-from electrum import Imported_Wallet
+from electrum_nmc.util import format_satoshis, NotEnoughFunds
+from electrum_nmc import Transaction
+from electrum_nmc import mnemonic
+from electrum_nmc import util, bitcoin, commands, Interface, Wallet
+from electrum_nmc import SimpleConfig, Wallet, WalletStorage
+from electrum_nmc import Imported_Wallet
 
 from amountedit import AmountEdit, BTCAmountEdit, MyLineEdit
 from network_dialog import NetworkDialog
@@ -58,7 +58,7 @@ import csv
 
 
 
-from electrum import ELECTRUM_VERSION
+from electrum_nmc import ELECTRUM_VERSION
 import re
 
 from util import MyTreeWidget, HelpButton, EnterButton, line_dialog, text_dialog, ok_cancel_buttons, close_button, WaitingDialog
@@ -207,7 +207,7 @@ class ElectrumWindow(QMainWindow):
         run_hook('close_wallet')
 
     def load_wallet(self, wallet):
-        import electrum
+        import electrum_nmc
         self.wallet = wallet
         self.update_wallet_format()
         # address used to create a dummy transaction and estimate transaction fee
@@ -1325,7 +1325,7 @@ class ElectrumWindow(QMainWindow):
                 self.amount_e.textEdited.emit("")
             return
 
-        from electrum import paymentrequest
+        from electrum_nmc import paymentrequest
         def payment_request():
             self.payment_request = paymentrequest.PaymentRequest(self.config)
             self.payment_request.read(request_url)
@@ -1608,7 +1608,7 @@ class ElectrumWindow(QMainWindow):
         self.update_invoices_tab()
 
     def show_invoice(self, key):
-        from electrum.paymentrequest import PaymentRequest
+        from electrum_nmc.paymentrequest import PaymentRequest
         domain, memo, value, expiration, status, tx_hash = self.invoices[key]
         pr = PaymentRequest(self.config)
         pr.read_file(key)
@@ -1627,7 +1627,7 @@ class ElectrumWindow(QMainWindow):
         QMessageBox.information(self, 'Invoice', msg , 'OK')
 
     def do_pay_invoice(self, key):
-        from electrum.paymentrequest import PaymentRequest
+        from electrum_nmc.paymentrequest import PaymentRequest
         domain, memo, value, expiration, status, tx_hash = self.invoices[key]
         pr = PaymentRequest(self.config)
         pr.read_file(key)
@@ -2224,7 +2224,7 @@ class ElectrumWindow(QMainWindow):
 
 
     def read_tx_from_qrcode(self):
-        from electrum import qrscanner
+        from electrum_nmc import qrscanner
         try:
             data = qrscanner.scan_qr(self.config)
         except BaseException, e:
@@ -2281,7 +2281,7 @@ class ElectrumWindow(QMainWindow):
             self.show_transaction(tx)
 
     def do_process_from_txid(self):
-        from electrum import transaction
+        from electrum_nmc import transaction
         txid, ok = QInputDialog.getText(self, _('Lookup transaction'), _('Transaction ID') + ':')
         if ok and txid:
             r = self.network.synchronous_get([ ('blockchain.transaction.get',[str(txid)]) ])[0]
@@ -2371,7 +2371,7 @@ class ElectrumWindow(QMainWindow):
         e.setReadOnly(True)
         vbox.addWidget(e)
 
-        defaultname = 'electrum-private-keys.csv'
+        defaultname = 'electrum-nmc-private-keys.csv'
         select_msg = _('Select file to export your private keys to')
         hbox, filename_e, csv_button = filename_field(self, self.config, defaultname, select_msg)
         vbox.addLayout(hbox)
@@ -2451,7 +2451,7 @@ class ElectrumWindow(QMainWindow):
     def do_export_labels(self):
         labels = self.wallet.labels
         try:
-            fileName = self.getSaveFileName(_("Select file to save your labels"), 'electrum_labels.dat', "*.dat")
+            fileName = self.getSaveFileName(_("Select file to save your labels"), 'electrum_nmc_labels.dat', "*.dat")
             if fileName:
                 with open(fileName, 'w+') as f:
                     json.dump(labels, f)
@@ -2467,7 +2467,7 @@ class ElectrumWindow(QMainWindow):
         d.setMinimumSize(400, 200)
         vbox = QVBoxLayout(d)
 
-        defaultname = os.path.expanduser('~/electrum-history.csv')
+        defaultname = os.path.expanduser('~/electrum-nmc-history.csv')
         select_msg = _('Select file to export your wallet transactions to')
 
         hbox, filename_e, csv_button = filename_field(self, self.config, defaultname, select_msg)
@@ -2634,7 +2634,7 @@ class ElectrumWindow(QMainWindow):
         lang_label = QLabel(_('Language') + ':')
         lang_help = HelpButton(_('Select which language is used in the GUI (after restart).'))
         lang_combo = QComboBox()
-        from electrum.i18n import languages
+        from electrum_nmc.i18n import languages
         lang_combo.addItems(languages.values())
         try:
             index = languages.keys().index(self.config.get("language",''))
@@ -2725,7 +2725,7 @@ class ElectrumWindow(QMainWindow):
         block_ex_combo.currentIndexChanged.connect(on_be)
         widgets.append((block_ex_label, block_ex_combo, block_ex_help))
 
-        from electrum import qrscanner
+        from electrum_nmc import qrscanner
         system_cameras = qrscanner._find_system_cameras()
         qr_combo = QComboBox()
         qr_combo.addItem("Default","default")
@@ -2809,7 +2809,7 @@ class ElectrumWindow(QMainWindow):
 
 
     def plugins_dialog(self):
-        from electrum.plugins import plugins
+        from electrum_nmc.plugins import plugins
 
         self.pluginsdialog = d = QDialog(self)
         d.setWindowTitle(_('Electrum Plugins'))
