@@ -125,7 +125,7 @@ class ElectrumWindow(QMainWindow):
         self.create_status_bar()
         self.need_update = threading.Event()
 
-        self.decimal_point = config.get('decimal_point', 5)
+        self.decimal_point = config.get('decimal_point', 8)
         self.num_zeros     = int(config.get('num_zeros',0))
         self.invoices      = {}
 
@@ -152,7 +152,7 @@ class ElectrumWindow(QMainWindow):
         if self.config.get("is_maximized"):
             self.showMaximized()
 
-        self.setWindowIcon(QIcon(":icons/electrum.png"))
+        self.setWindowIcon(QIcon(":icons/electrum-nmc.png"))
         self.init_menubar()
 
         QShortcut(QKeySequence("Ctrl+W"), self, self.close)
@@ -494,11 +494,11 @@ class ElectrumWindow(QMainWindow):
     def base_unit(self):
         assert self.decimal_point in [2, 5, 8]
         if self.decimal_point == 2:
-            return 'bits'
+            return 'uNMC'
         if self.decimal_point == 5:
-            return 'mBTC'
+            return 'mNMC'
         if self.decimal_point == 8:
-            return 'BTC'
+            return 'NMC'
         raise Exception('Unknown base unit')
 
     def update_status(self):
@@ -2682,24 +2682,24 @@ class ElectrumWindow(QMainWindow):
         fee_e.editingFinished.connect(on_fee)
         widgets.append((fee_label, fee_e, fee_help))
 
-        units = ['BTC', 'mBTC', 'bits']
+        units = ['NMC', 'mNMC', 'uNMC']
         unit_label = QLabel(_('Base unit') + ':')
         unit_combo = QComboBox()
         unit_combo.addItems(units)
         unit_combo.setCurrentIndex(units.index(self.base_unit()))
         msg = _('Base unit of your wallet.')\
-              + '\n1BTC=1000mBTC.\n' \
+              + '\n1NMC=1000mNMC.\n' \
               + _(' These settings affects the fields in the Send tab')+' '
         unit_help = HelpButton(msg)
         def on_unit(x):
             unit_result = units[unit_combo.currentIndex()]
             if self.base_unit() == unit_result:
                 return
-            if unit_result == 'BTC':
+            if unit_result == 'NMC':
                 self.decimal_point = 8
-            elif unit_result == 'mBTC':
+            elif unit_result == 'mNMC':
                 self.decimal_point = 5
-            elif unit_result == 'bits':
+            elif unit_result == 'uNMC':
                 self.decimal_point = 2
             else:
                 raise Exception('Unknown base unit')
