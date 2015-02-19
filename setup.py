@@ -13,7 +13,7 @@ version = imp.load_source('version', 'lib/version.py')
 util = imp.load_source('util', 'lib/util.py')
 
 if sys.version_info[:3] < (2, 7, 0):
-    sys.exit("Error: Electrum requires Python version >= 2.7.0...")
+    sys.exit("Error: Electrum-nmc requires Python version >= 2.7.0...")
 
 
 
@@ -26,11 +26,11 @@ if (len(sys.argv) > 1) and (sys.argv[1] == "install"):
         try:
             os.mkdir(usr_share)
         except:
-            sys.exit("Error: cannot write to %s.\nIf you do not have root permissions, you may install Electrum in a virtualenv.\nAlso, please note that you can run Electrum without installing it on your system."%usr_share)
+            sys.exit("Error: cannot write to %s.\nIf you do not have root permissions, you may install Electrum-nmc in a virtualenv.\nAlso, please note that you can run Electrum-nmc without installing it on your system."%usr_share)
 
     data_files += [
-        (os.path.join(usr_share, 'applications/'), ['electrum.desktop']),
-        (os.path.join(usr_share, 'app-install', 'icons/'), ['icons/electrum.png'])
+        (os.path.join(usr_share, 'applications/'), ['electrum-nmc.desktop']),
+        (os.path.join(usr_share, 'app-install', 'icons/'), ['icons/electrum-nmc.png'])
     ]
     if not os.path.exists('locale'):
         os.mkdir('locale')
@@ -39,7 +39,7 @@ if (len(sys.argv) > 1) and (sys.argv[1] == "install"):
             data_files.append((os.path.join(usr_share, 'locale/%s/LC_MESSAGES' % lang), ['locale/%s/LC_MESSAGES/electrum.mo' % lang]))
 
 
-    appdata_dir = os.path.join(usr_share, "electrum")
+    appdata_dir = os.path.join(usr_share, "electrum-nmc")
     data_files += [
         (appdata_dir, ["data/README"]),
         (os.path.join(appdata_dir, "cleanlook"), [
@@ -62,7 +62,7 @@ else:
     data_files = []
 
 setup(
-    name="Electrum",
+    name="Electrum-nmc",
     version=version.ELECTRUM_VERSION,
     install_requires=[
         'slowaes>=0.1a1',
@@ -77,75 +77,75 @@ setup(
         'tlslite'
     ],
     package_dir={
-        'electrum': 'lib',
-        'electrum_gui': 'gui',
-        'electrum_plugins': 'plugins',
+        'electrum_nmc': 'lib',
+        'electrum_nmc_gui': 'gui',
+        'electrum_nmc_plugins': 'plugins',
     },
     scripts=['electrum'],
     data_files=data_files,
     py_modules=[
-        'electrum.account',
-        'electrum.bitcoin',
-        'electrum.blockchain',
-        'electrum.bmp',
-        'electrum.commands',
-        'electrum.daemon',
-        'electrum.i18n',
-        'electrum.interface',
-        'electrum.mnemonic',
-        'electrum.msqr',
-        'electrum.network',
-        'electrum.network_proxy',
-        'electrum.old_mnemonic',
-        'electrum.paymentrequest',
-        'electrum.paymentrequest_pb2',
-        'electrum.plugins',
-        'electrum.qrscanner',
-        'electrum.simple_config',
-        'electrum.synchronizer',
-        'electrum.transaction',
-        'electrum.util',
-        'electrum.verifier',
-        'electrum.version',
-        'electrum.wallet',
-        'electrum.x509',
-        'electrum_gui.gtk',
-        'electrum_gui.qt.__init__',
-        'electrum_gui.qt.amountedit',
-        'electrum_gui.qt.console',
-        'electrum_gui.qt.history_widget',
-        'electrum_gui.qt.icons_rc',
-        'electrum_gui.qt.installwizard',
-        'electrum_gui.qt.lite_window',
-        'electrum_gui.qt.main_window',
-        'electrum_gui.qt.network_dialog',
-        'electrum_gui.qt.password_dialog',
-        'electrum_gui.qt.paytoedit',
-        'electrum_gui.qt.qrcodewidget',
-        'electrum_gui.qt.qrtextedit',
-        'electrum_gui.qt.qrwindow',
-        'electrum_gui.qt.receiving_widget',
-        'electrum_gui.qt.seed_dialog',
-        'electrum_gui.qt.transaction_dialog',
-        'electrum_gui.qt.util',
-        'electrum_gui.qt.version_getter',
-        'electrum_gui.stdio',
-        'electrum_gui.text',
-        'electrum_plugins.btchipwallet',
-        'electrum_plugins.coinbase_buyback',
-        'electrum_plugins.cosigner_pool',
-        'electrum_plugins.exchange_rate',
-        'electrum_plugins.greenaddress_instant',
-        'electrum_plugins.labels',
-        'electrum_plugins.trezor',
-        'electrum_plugins.virtualkeyboard',
-        'electrum_plugins.plot',
+        'electrum_nmc.account',
+        'electrum_nmc.bitcoin',
+        'electrum_nmc.blockchain',
+        'electrum_nmc.bmp',
+        'electrum_nmc.commands',
+        'electrum_nmc.daemon',
+        'electrum_nmc.i18n',
+        'electrum_nmc.interface',
+        'electrum_nmc.mnemonic',
+        'electrum_nmc.msqr',
+        'electrum_nmc.network',
+        'electrum_nmc.network_proxy',
+        'electrum_nmc.old_mnemonic',
+        'electrum_nmc.paymentrequest',
+        'electrum_nmc.paymentrequest_pb2',
+        'electrum_nmc.plugins',
+        'electrum_nmc.qrscanner',
+        'electrum_nmc.simple_config',
+        'electrum_nmc.synchronizer',
+        'electrum_nmc.transaction',
+        'electrum_nmc.util',
+        'electrum_nmc.verifier',
+        'electrum_nmc.version',
+        'electrum_nmc.wallet',
+        'electrum_nmc.x509',
+        'electrum_nmc_gui.gtk',
+        'electrum_nmc_gui.qt.__init__',
+        'electrum_nmc_gui.qt.amountedit',
+        'electrum_nmc_gui.qt.console',
+        'electrum_nmc_gui.qt.history_widget',
+        'electrum_nmc_gui.qt.icons_rc',
+        'electrum_nmc_gui.qt.installwizard',
+        'electrum_nmc_gui.qt.lite_window',
+        'electrum_nmc_gui.qt.main_window',
+        'electrum_nmc_gui.qt.network_dialog',
+        'electrum_nmc_gui.qt.password_dialog',
+        'electrum_nmc_gui.qt.paytoedit',
+        'electrum_nmc_gui.qt.qrcodewidget',
+        'electrum_nmc_gui.qt.qrtextedit',
+        'electrum_nmc_gui.qt.qrwindow',
+        'electrum_nmc_gui.qt.receiving_widget',
+        'electrum_nmc_gui.qt.seed_dialog',
+        'electrum_nmc_gui.qt.transaction_dialog',
+        'electrum_nmc_gui.qt.util',
+        'electrum_nmc_gui.qt.version_getter',
+        'electrum_nmc_gui.stdio',
+        'electrum_nmc_gui.text',
+        'electrum_nmc_plugins.btchipwallet',
+        'electrum_nmc_plugins.coinbase_buyback',
+        'electrum_nmc_plugins.cosigner_pool',
+        'electrum_nmc_plugins.exchange_rate',
+        'electrum_nmc_plugins.greenaddress_instant',
+        'electrum_nmc_plugins.labels',
+        'electrum_nmc_plugins.trezor',
+        'electrum_nmc_plugins.virtualkeyboard',
+        'electrum_nmc_plugins.plot',
 
     ],
-    description="Lightweight Bitcoin Wallet",
+    description="Lightweight Namecoin Wallet",
     author="Thomas Voegtlin",
     author_email="thomasv1@gmx.de",
     license="GNU GPLv3",
     url="https://electrum.org",
-    long_description="""Lightweight Bitcoin Wallet"""
+    long_description="""Lightweight Namecoin Wallet"""
 )
