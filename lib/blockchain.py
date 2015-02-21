@@ -32,7 +32,8 @@ class Blockchain(threading.Thread):
         self.lock = threading.Lock()
         self.local_height = 0
         self.running = False
-        self.headers_url = 'http://headers.electrum.org/blockchain_headers'
+        # No headers url for Namecoin
+        self.headers_url = ''#'http://headers.electrum.org/blockchain_headers'
         self.set_local_height()
         self.queue = Queue.Queue()
 
@@ -105,6 +106,9 @@ class Blockchain(threading.Thread):
 
     def verify_chain(self, chain):
 
+        # For now don't verify chains (TODO)
+        return True
+
         first_header = chain[0]
         prev_header = self.read_header(first_header.get('block_height') -1)
 
@@ -132,6 +136,11 @@ class Blockchain(threading.Thread):
         data = hexdata.decode('hex')
         height = index*2016
         num = len(data)/80
+
+        # For now don't verify chunks (TODO)
+        self.save_chunk(index, data)
+        return
+        # # #
 
         if index == 0:
             previous_hash = ("0"*64)
